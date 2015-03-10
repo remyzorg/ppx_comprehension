@@ -2,15 +2,6 @@
 module Comprehension = struct
 
 
-  let range n =
-    let rec step acc n =
-      if n = 0 then 0 :: acc
-      else
-        let n = n - 1 in
-        step (n :: acc) n
-    in step [] n
-
-
   let range_map_start_filter : (int -> bool) -> int -> int -> (int -> 'a) -> 'a list =
     fun p start stop f ->
     let rec step acc stop =
@@ -20,19 +11,6 @@ module Comprehension = struct
         if p stop then step (f stop :: acc) stop
         else step acc stop
     in step [] stop
-
-  let range_map_start : int -> int -> (int -> 'a) -> 'a list =
-    fun start stop f ->
-    let rec step acc stop =
-      if stop = start then f start :: acc
-      else
-        let stop = stop - 1 in
-        step (f stop :: acc) stop
-    in step [] stop
-
-  let range_map stop f = range_map_start 0 stop f
-  let range_map_filter p stop f = range_map_start_filter p stop f
-
 
 end
 
