@@ -25,25 +25,32 @@ let rec pattern_of_expr e =
 
 let handle_payload ~loc e =
   match e with
-  | [%expr [%e? pattern] [%e? eop] [%e? el]] ->
-    let ident_pat = pattern_of_expr pattern in
+  | [%expr let [%p? pattern] = [%e? el] in [%e? eop]] ->
+    (* let ident_pat = pattern_of_expr pattern in *)
     let pred, eop = match eop with
       | [%expr if [%e? cond] then [%e? ethen]] ->
-        [%expr (fun [%p ident_pat] -> [%e cond] )], ethen
+        [%expr (fun [%p pattern] -> [%e cond] )], ethen
       | e -> [%expr fun _ -> true], e
     in
     let start, stop = begin match el with
       | [%expr range [%e? stop]] -> [%expr 0], stop
       | [%expr range [%e? start] [%e? stop]]
       | [%expr [%e? start] -- [%e? stop]] -> start, stop
-      | _ -> error ~loc:el.pexp_loc "comprehension list expected"
+      | _ -> [%expr 0], [%expr 0]
     end in
-    [%expr Comprehension.range_map_start_filter
-             [%e pred]
-             [%e start] [%e stop]
-             (fun [%p ident_pat] -> [%e eop])]
+    let fun_expr =
+      match el with
+      | [%expr range [%e? stop ]] ->
+        [%expr Comprehension.range_map_start_filter [%expr 0] [%e stop]]
+      | [%expr range [%e? start] [%e? stop]]
+      | [%expr [%e? start] -- [%e? stop]] ->
+        [%expr Comprehension.range_map_start_filter [%e start] [%e stop]]
+      | _ ->
+        [%expr Comprehension.map_filter [%e el]]
+    in
+    [%expr [%e fun_expr] [%e pred] (fun [%p pattern] -> [%e eop])]
 
-  | _ -> error ~loc "syntax error"
+  | _ -> error ~loc "Syntax error"
 
 
 
