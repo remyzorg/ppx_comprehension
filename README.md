@@ -34,7 +34,7 @@ expr ::= <ocaml-expr>
 
 The if-then keyword just adds a predicate to the function (range or map)
 
-### `range`keyword
+### `range` keyword
 
 The range keyword doesn't compute a list in the first place. It
 creates the list `[f (start); ... ; f(stop)]` in *O(n)* so it goes from
