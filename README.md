@@ -38,6 +38,6 @@ The if-then keyword just adds a predicate to the function (range or map)
 
 The range keyword doesn't compute a list in the first place. It
 creates the list [f (start); ... ; f(stop)] in O(n) so it goes from
-start to stop by calling a range function with parameter f
+stop to start (reverse construction) by calling a range function with parameter f.
 
 If the <list-expr> is an Ocaml expression, the called function is a filter_map
