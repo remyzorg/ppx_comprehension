@@ -2,7 +2,7 @@
 Syntax extension point for list comprehension
 
 
-```
+```ocaml
 # let l = [%cl let x = range 8 in "lol"]
 val l : bytes list = ["lol"; "lol"; "lol"; "lol"; "lol"; "lol"; "lol"; "lol"; "lol"]
 
