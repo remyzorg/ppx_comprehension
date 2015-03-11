@@ -3,14 +3,15 @@ Syntax extension point for list comprehension
 
 
 ```ocaml
-# let l = [%cl let x = range 8 in "lol"]
-val l : bytes list = ["lol"; "lol"; "lol"; "lol"; "lol"; "lol"; "lol"; "lol"; "lol"]
+# let l = [%cl let x = 2--10 in x]
+val l : int list = [2; 3; 4; 5; 6; 7; 8; 9; 10]
 
-# let l2 = [%cl let y = if y mod 2 != 0 then Format.sprintf "%d" (y * 2) in (2--10)]
-val l2 : bytes list = ["4"; "6"; "10"; "14"; "18"]
-
+# let l2 = [%cl let y = 2--10 in if y mod 2 != 0 then Format.sprintf "%d" (y * 2)]
+val l2 : bytes list = ["6"; "10"; "14"; "18"]
 
 # let l3 = [%cl let y = l in string_of_int y]
+val l3 : bytes list = ["2"; "3"; "4"; "5"; "6"; "7"; "8"; "9"; "10"]
+
 
 ```
 
