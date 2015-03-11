@@ -13,14 +13,9 @@ open Longident
 let error ~loc s = raise (Location.Error (
     Location.error ~loc ("[%cl] " ^ s)))
 
+let list_of_tuple seq =
+  let rec step e =
 
-let rec pattern_of_expr e =
-  match e.pexp_desc with
-  | Pexp_ident {txt = Longident.Lident s; loc} ->
-    (Pat.var {txt = s; loc})
-  | Pexp_tuple exprs ->
-    (Pat.tuple ~loc:e.pexp_loc @@ List.map pattern_of_expr exprs)
-  | _ -> error ~loc:e.pexp_loc "identifier or tuple expected"
 
 
 let handle_payload ~loc e =
@@ -32,19 +27,20 @@ let handle_payload ~loc e =
         [%expr (fun [%p pattern] -> [%e cond] )], ethen
       | e -> [%expr fun _ -> true], e
     in
-    let start, stop = begin match el with
-      | [%expr range [%e? stop]] -> [%expr 0], stop
-      | [%expr range [%e? start] [%e? stop]]
-      | [%expr [%e? start] -- [%e? stop]] -> start, stop
-      | _ -> [%expr 0], [%expr 0]
-    end in
     let fun_expr =
       match el with
       | [%expr range [%e? stop ]] ->
         [%expr Comprehension.range_map_start_filter [%expr 0] [%e stop]]
       | [%expr range [%e? start] [%e? stop]]
       | [%expr [%e? start] -- [%e? stop]] ->
-        [%expr Comprehension.range_map_start_filter [%e start] [%e stop]]
+
+        (* begin match start, stop with *)
+        (* | Pexp_tuple el_start, Pexp_tuple el_stop when *)
+        (*     List.(length el_start = length el_stop) -> *)
+        (*   [%expr Compehension.range_map_start_filter_  ] *)
+        (* | _ -> *)
+          [%expr jjComprehension.range_map_start_filter [%e start] [%e stop]]
+        (* end *)
       | _ ->
         [%expr Comprehension.map_filter [%e el]]
     in
