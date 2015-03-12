@@ -13,10 +13,6 @@ open Longident
 let error ~loc s = raise (Location.Error (
     Location.error ~loc ("[%cl] " ^ s)))
 
-let list_of_tuple seq =
-  let rec step e =
-
-
 
 let handle_payload ~loc e =
   match e with
@@ -29,20 +25,10 @@ let handle_payload ~loc e =
     in
     let fun_expr =
       match el with
-      | [%expr range [%e? stop ]] ->
-        [%expr Comprehension.range_map_start_filter [%expr 0] [%e stop]]
-      | [%expr range [%e? start] [%e? stop]]
       | [%expr [%e? start] -- [%e? stop]] ->
-
-        (* begin match start, stop with *)
-        (* | Pexp_tuple el_start, Pexp_tuple el_stop when *)
-        (*     List.(length el_start = length el_stop) -> *)
-        (*   [%expr Compehension.range_map_start_filter_  ] *)
-        (* | _ -> *)
-          [%expr jjComprehension.range_map_start_filter [%e start] [%e stop]]
-        (* end *)
+          [%expr Comprehension.range_map_start_filter [%e start] [%e stop]]
       | _ ->
-        [%expr Comprehension.map_filter [%e el]]
+        [%expr Comprehension.(map_filter [%e el])]
     in
     [%expr [%e fun_expr] [%e pred] (fun [%p pattern] -> [%e eop])]
 
